@@ -1,0 +1,60 @@
+#include "load.h"
+#include <cstdlib>
+#include <iostream>
+#include <fstream>
+using namespace std;
+int loadrdf(const string rdf_file,const string database)
+    {
+const char *table = database.data();
+    ifstream _fin(rdf_file.c_str());
+    if(!_fin)
+    {
+    cerr<<"fair to open~~"<<rdf_file<<endl;
+    exit(0);
+    }
+    TripleWithObjType* triple_array =new TripleWithObjType[RDFParser::TRIPLE_NUM_PER_GROUP];
+    RDFParser _parser(_fin);
+    ifstream _file;
+    _file.open(database.c_str(),ios::in);
+     if(!_file)
+	{
+	   	cout<<"database not exist...cteate now"<<endl;
+		CommandCreate(table);
+	}
+      else
+	{
+		cout<<"database found. insert soon"<<endl;
+		_file.close();
+		CommandOpen(table);
+	}
+    while(true)
+    {
+     int parse_triple_num = 0;
+     _parser.parseFile(triple_array,parse_triple_num);
+    if(parse_triple_num ==0)
+    {break;}
+
+    for(int i=0; i<parse_triple_num;i++)
+        {
+        // for subject
+         string _sub = triple_array[i].getSubject();
+         cout<<"SSSSSSSSSS～～～～～～～～～"<<_sub<<endl;
+	 int data=1;
+	// CommandInsert(table, (void *)_sub ,strlen(_sub), (void *)data, sizeof(data));
+	CommandInsert(table, &_sub ,strlen(_sub.c_str()), &data, sizeof(data));
+
+         //For predicate
+         string _pre = triple_array[i].getPredicate();
+  	 CommandInsert(table, &_pre ,strlen(_pre.c_str()), &data, sizeof(data));
+         cout<<"PPPPPPPPPP～～～～～～～～～"<<_pre<<endl;
+         //For object
+        string _obj = triple_array[i].getObject();
+	 CommandInsert(table, &_obj ,strlen(_obj.c_str()), &data, sizeof(data));
+
+         cout<<"OOOOOOOOOOO～～～～～～～～～"<<_obj<<endl;
+        }
+
+
+    }
+return 1;
+    }
