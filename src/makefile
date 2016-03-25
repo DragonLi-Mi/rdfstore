@@ -1,6 +1,6 @@
 HOME = ..
 INCS = -I$(GPPINCL)  -I$(HOME)/libbtree  -I$(HOME)/libgist -I.
-objects = main.o load.o RDFParser.o Triple.o TurtleParser.o bt_driver.o
+objects = main.o load.o RDFParser.o Triple.o TurtleParser.o bt_driver.o md5.o
 CC  = g++
 
 LDFLAGS = -L$(HOME)/lib
