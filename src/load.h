@@ -4,6 +4,7 @@
 #include "TurtleParser.h"
 #include "RDFParser.h"
 #include "../operate/operate.h"
+//#include "md5.h"
 //#include "operate.h"
 
 using namespace std;

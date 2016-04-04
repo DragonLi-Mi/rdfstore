@@ -30,7 +30,7 @@ class gist_m;
  */
 struct page_s {
     struct slot_t {
-	int2 offset;		// -1 if vacant
+	int2 offset;		// -1 if vacantn
 	uint2 length;
     };
 
@@ -174,6 +174,7 @@ public:
 	const cvec_t& 		    el, 
 	int 			    slot, 
 	shpid_t 		    child = 0);
+
     rc_t			remove(int slot);
 
 #ifdef LIBGIST
@@ -187,8 +188,12 @@ public:
     gist_p& 			operator=(const gist_p& p);
     smsize_t			usable_space();
     const lpid_t& 		pid() const;
+        long long node_expand(     const char*            node);
+  rc_t  enoughspace(const char*            node);
 
 private:
+
+
     rc_t			insert_expand(
 	int 			    idx,
 	int 			    cnt, 

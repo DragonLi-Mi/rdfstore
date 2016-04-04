@@ -65,6 +65,7 @@ public:
 
     // list of extension object IDs
     enum gist_ext_ids {
+              nodes,
 	rt_point_ext_id,
 	rt_rect_ext_id,
 	ubt_int_ext_id,

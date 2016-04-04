@@ -106,6 +106,7 @@ gist_p::insert(
 #endif
 }
 
+
 bool
 gist_p::is_root() const
 {
@@ -325,7 +326,50 @@ gist_p::insert_expand(
     
     return RCOK;
 }
+
+
+long long        
+gist_p::node_expand(     
+    const char*            node)
+{
+
+    uint4 total = 0;
+    total= strlen(node);
+    int freespace=_pp->data_sz - _pp->end;
+
+    if (freespace< total)  {
+    std::cout<<"this page  does't have enough space to insert this node"<<std::endl;
+    }
+
+
+memcpy(_pp->data,node,strlen(node));
+
+    //  Fill up the slots and data
+    register slot_t* p = &_pp->slot[0];
+
+    p->offset = _pp->end;
+    p->length = total;
+    _pp->end += int(p->length);
+    long long page_offset=(long long)_pp->end;
     
+    return page_offset;
+}
+rc_t 
+gist_p::enoughspace(const char*            node)
+{
+    int  length = strlen(node);
+    int freespace=_pp->data_sz - _pp->end;
+    if (length<=freespace)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+
 rc_t		
 gist_p::remove_compress(int idx, int cnt)
 {

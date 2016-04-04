@@ -3,7 +3,9 @@
 #include <iostream>
 #include <fstream>
 #include "bt_query.h"
+#include "md5.h"
 using namespace std;
+static char nodetable[] = "nodes";
 int loadrdf(const string rdf_file,const string database)
     {
 const char *table = database.data();
@@ -13,6 +15,7 @@ const char *table = database.data();
     cerr<<"fair to open~~"<<rdf_file<<endl;
     exit(0);
     }
+    CommandCreateNodefile(nodetable);
     TripleWithObjType* triple_array =new TripleWithObjType[RDFParser::TRIPLE_NUM_PER_GROUP];
     RDFParser _parser(_fin);
     ifstream _file;
@@ -30,34 +33,40 @@ const char *table = database.data();
 	}
     while(true)
     {
-     int parse_triple_num = 100;
-    // _parser.parseFile(triple_array,parse_triple_num);
+     int parse_triple_num = 0;
+     _parser.parseFile(triple_array,parse_triple_num);
     if(parse_triple_num ==0)
     {break;}
 
     for(int i=0; i<parse_triple_num;i++)
         {
         // for subject
-         //string _sub = triple_array[i].getSubject();
-         int _sub=i;
-         cout<<"SSSSSSSSSS～～～～～～～～～"<<_sub<<endl;
-	 int data=200;
-	// CommandInsert(table, (void *)_sub ,strlen(_sub), (void *)data, sizeof(data));
-	//CommandInsert(table, &_sub ,strlen(_sub.c_str()), &data, sizeof(data));
-     CommandInsert(table, &_sub ,sizeof(int), &data, sizeof(data));
-data++;
+         string _sub = triple_array[i].getSubject();
+         string _subh=MD5(_sub).toString();
+      
+         const  char *sub = _subh.c_str();
+         long long subid=add2Node(sub);
+         cout<<"sub id: "<<subid<<endl;
+            cout<<"SSSSSSSSSS～～～～～～～～～"<<_sub<<"   MD5:"<<_subh<<endl;
+         CommandInsert(table, const_cast<char*>(sub) ,strlen(sub), &subid, sizeof(subid));
+
          //For predicate
-         //string _pre = triple_array[i].getPredicate();
-        	int _pre = i+100;
-         CommandInsert(table, &_pre ,sizeof(int), &data, sizeof(data));
-         cout<<"PPPPPPPPPP～～～～～～～～～"<<_pre<<endl;
-         data++;
+          string _pre = triple_array[i].getPredicate();
+          string _preh=MD5(_pre).toString();
+          const char *pre = _preh.c_str();
+          long long preid=add2Node(pre);
+           cout<<"pre id: "<<preid<<endl;
+     //     cout<<"PPPPPPPPPP～～～～～～～～～"<<pre<<"   MD5:"<<_preh<<endl;
+          CommandInsert(table, const_cast<char*>(pre) ,strlen(pre), &preid, sizeof(preid));
+       
          //For object
-        int _obj =i+1000;
-       // string _obj = triple_array[i].getObject();
-	 CommandInsert(table, &_obj ,sizeof(int), &data, sizeof(data));
-	cout<<"count: "<<i<<endl;
-         cout<<"OOOOOOOOOOO～～～～～～～～～"<<_obj<<endl;
+            string _obj = triple_array[i].getObject();
+            string _objh=MD5(_obj).toString();
+           const  char *obj = _objh.c_str();
+            long long objid=add2Node(obj);
+             cout<<"obj id: "<<objid<<endl;
+            CommandInsert(table, const_cast<char*>(obj) ,strlen(obj), &objid, sizeof(objid));
+           //  cout<<"OOOOOOOOOOO～～～～～～～～～"<<obj<<"   MD5:"<<_objh<<endl;
         }
 
 break;
@@ -68,8 +77,9 @@ break;
    // int* qx;
     //qx=&qu;
     //bt_query_t q(bt_query_t::bt_eq, new int(1096),NULL);
-    int ww=1096;
-    bt_query_t q(bt_query_t::bt_eq,new int(ww),NULL);
+ 
+    char ww[]="801ee50a2a70654ecf6273f9754bee70";
+    bt_query_t q(bt_query_t::bt_eq,new char*(ww),NULL);
 
      CommandSelect(table,&q);
      CommandClose(table);

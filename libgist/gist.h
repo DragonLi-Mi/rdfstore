@@ -86,6 +86,12 @@ public:
 	const char*		    filename,
 	gist_ext_t*		    ext);
 
+    // create an empty  nodesfile
+    rc_t			create(
+	const char*		    filename,
+	gist_ext_t*		    ext,
+	const char*  filetype);
+
     // open an existing Gist
     rc_t			open(
 	const char*		    filename,
@@ -93,7 +99,9 @@ public:
 
     rc_t			close();
     rc_t			flush(); 
-
+// add a node
+        long long 			addnode(
+	const char*		 node);
     // insert a single key
     rc_t			insert(
 	const void*		    key, 

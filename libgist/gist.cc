@@ -150,6 +150,26 @@ gist_m::create(
     W_DO(file.flush());
     return RCOK;
 }
+rc_t
+gist_m::create(
+    const char*     filename,
+    gist_ext_t*     extension,
+    const char*  filetype)
+{
+    ext = extension;
+    W_DO(file.create(filename,filetype));
+    isOpen = true;
+
+    // // create the root page
+    // gist_p root;
+    // lpid_t rootPid(0, 0, rootNo);
+    // lpid_t noPid(0, 0, 0);
+    // _new_page(rootPid, noPid, root, 1); // this is a leaf
+    // w_assert3(rootNo == root.pid().page);
+    // _unfix_page(root);
+    // W_DO(file.flush());
+    return RCOK;
+}
 #else 
 rc_t
 gist_m::create(
@@ -193,6 +213,7 @@ gist_m::_locate_leaf(
     for (;;) {
 	W_DO(_fix_page(page, currPid, LATCH_EX));
 
+
 	if (!page.is_leaf()) {
 	    ext->findMinPen(page, key, data, index);
 	    stack.push(page, index);
@@ -207,6 +228,37 @@ gist_m::_locate_leaf(
 	// no page.unfix(); we leave the pages fixed for now
     }
 }
+
+// rc_t
+// gist_m::locate_page(
+//     const lpid_t&   root, // root of index
+//     const char*    node, // node to  add
+//     const int               nodesize
+//     ) 
+// {
+// //     lpid_t currPid = root;
+// //     gist_p page;
+// //     int index;
+
+// //     for (;;) {
+// //     W_DO(_fix_page(page, currPid, LATCH_EX));
+    
+// //         if (page._pp->space.usable()<nodesize)
+// //             {
+                
+// //             }
+
+
+// //     // follow child pointer
+// //     currPid.page = page.rec(index).child();
+// //     // no page.unfix(); we leave the pages fixed for now
+// //     }
+// }
+
+
+
+
+
 
 rc_t
 gist_m::_insert_leaf(
@@ -591,6 +643,69 @@ gist_m::insert(
 
     return RCOK;
 }
+
+
+
+long long 
+gist_m::addnode(
+    const char*      node)
+        {
+            int buflen=strlen(node);
+        
+
+            long id= file._write_node(buflen, node);
+
+
+            // lpid_t root(0, 0, rootNo);
+         //     gist_ustk stack;
+
+  //           lpid_t currPid = root;
+  //            gist_p page;
+  //           int index=0;
+  //           max_page = file.size();
+  //           cout<<"max_page: "<<max_page<<endl;
+  //            int notfull=1;
+
+  //   while(max_page>=0&&index<=max_page){
+  //           _fix_page(page, currPid, LATCH_EX);
+  //             if(page.enoughspace(node)){
+  //               notfull=0;
+  //               break;
+  //           }
+  //           else
+  //           {
+  //               currPid.page=currPid.page+1;
+  //           }
+  //   }
+  //       if (notfull ==0)
+  //       {
+  //          file.flush();
+  //           gist_p  newpage;
+  //       newpage.descr=file.allocPage();
+  //       newpage._pp=(page_s *)newpage.descr->page;
+  //        gistctrl_t hdr;
+  //       lpid_t rootPid(0, 0, rootNo);
+  //       hdr.root = rootPid;
+  //       hdr.level = 1;
+      
+  //        W_DO(newpage.format(lpid_t(0, 0, newpage.descr->pageNo), &hdr));
+
+  //       }
+  //        if (filefull ==0){
+  //      long long id = newpage.node_expand(node);
+  //       }
+  //      else{
+  // long long id = page.node_expand(node);
+  //      }
+  //      cout<<"node id "<<id<<endl;
+  //   return id;
+            //      W_DO(_locate_leaf(root, ext, stack, keyv, datav));
+          //   gist_p &leaf = stack.top()->page;
+            return id;
+        }
+
+
+
 
 rc_t
 gist_m::_update_parent(

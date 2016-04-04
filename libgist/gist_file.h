@@ -11,7 +11,7 @@
 #endif
 
 #include "gist_htab.h"
-
+#include <iostream>
 class gist_file {
 
 public:
@@ -22,6 +22,7 @@ public:
 
     rc_t create(const char *filename);
     // creates an 'empty' file (except for header info) with given name
+   rc_t create(const char *filename,const char *filetype);
 
     rc_t open(const char *filename);
     // open this file as a Gist file for subsequent operations
@@ -41,6 +42,7 @@ public:
 	char *page; // pointer to in-mem page
 	bool isDirty; // true if modified since pinned
 	int pinCount; 
+
     };
 
     page_descr *pinPage(shpid_t page);
@@ -59,6 +61,7 @@ public:
 
     void setDirty(page_descr *descr, bool isDirty);
     // change that page's status
+    long  _write_node(int buf, const  char*      node);
 
 protected:
 

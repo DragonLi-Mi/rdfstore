@@ -12,6 +12,8 @@ void CommandDelete(const char *table, void *query);
 void CommandInsert(const char *table, void * key, int klen, void *data, int dlen);
 void CommandQuit();
 void CommandDump(const char *table, shpid_t pgno);
+void CommandCreateNodefile(const char *table);
+long long  add2Node(const char *node );
 
 extern void printDatum(
 //void printDatum(

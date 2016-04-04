@@ -7,6 +7,7 @@
 #endif
 
 #include <stdio.h>
+#include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -27,6 +28,8 @@
 #include "gist_file.h"
 
 static char magic[] = "Gist data file";
+static char head[] = "nodes file";
+
 
 const int gist_file::invalidIdx = -1;
 
@@ -109,7 +112,7 @@ gist_file::flush()
 {
     if (!isOpen) {
         return (eFILEERROR);
-    }
+    }           
 
     for (int i = 0; i < GISTBUFS; i++) {
         if (descrs[i].isDirty) {
@@ -156,6 +159,19 @@ gist_file::_write_page(shpid_t pageNo, char *page)
     status = write(fileHandle, page, SM_PAGESIZE);
     if (status < 0) return (eFILEERROR);
     return RCOK;
+}
+
+long
+gist_file::_write_node(int buf, const char*      node)
+{
+    long  id = lseek(fileHandle, buf, SEEK_END);
+    if (id < 0) return (eFILEERROR);
+    int status = write(fileHandle, node, buf);
+    if (status < 0) return (eFILEERROR);
+    // std::cout<<"-----------------------------"<<status<<std::endl;
+    //     std::cout<<"-----------------------------"<<buf<<std::endl;
+
+    return id;
 }
 
 rc_t
@@ -313,4 +329,39 @@ gist_file::returnPage(shpid_t page)
     W_DO(_write_page(page, buf));
 
     return RCOK;
+}
+
+rc_t
+gist_file::create(const char *filename,const char *filetype)
+{
+    char *type="nodes";
+if (strcmp(filetype,type)!=0)
+{
+    std::cout<<"file types is not nodes"<<std::endl;
+    return false;
+}
+    assert(!isOpen);
+    fileHandle = ::open(filename,O_BINARY | O_RDWR );
+    if (fileHandle >= 0) { // filename exists
+        ::close(fileHandle);
+        return (eFILEERROR);
+    }
+
+    
+      fileHandle = ::open(filename, O_BINARY |O_RDWR | O_CREAT | O_TRUNC,
+        S_IREAD | S_IWRITE);
+
+    if (fileHandle < 0) {
+        return (fileHandle);  // error: couldn't create
+    }
+
+    isOpen = true;
+
+    // /* Reserve page 0 */
+    // char page[SM_PAGESIZE];
+    // memset(page, 0, SM_PAGESIZE);
+    // memcpy(page, magic, sizeof(magic));
+    // write(fileHandle, page, SM_PAGESIZE);
+    fileSize = 1;
+    return(RCOK);
 }

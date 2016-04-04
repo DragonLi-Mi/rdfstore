@@ -320,4 +320,50 @@ void CommandDump(const char *table, shpid_t pgno)
   tables[i].gist->dump(pgno);
 }
 
+void CommandCreateNodefile(const char *table)
+{
+   const char  *filetype = "nodes";
+  if (numTables == MAX_TABLES) { 
+    cout << "This progam can only handle " 
+   << MAX_TABLES << " open tables" << endl; 
+    return; 
+  }
 
+  gist_m *gist = new gist_m;
+
+  rc_t status = gist->create(table, extension,filetype);
+  gist->flush();
+  if (status != RCOK) {
+    cout << "Error opening nodes table." << endl;
+    delete gist;
+    return;
+  }
+
+ // cout << "Table " << table << " created as type " << identStr << endl;
+      cout<< "Create node table "<<endl;
+  tables[numTables].name = strdup(table);
+  tables[numTables].gist = gist;
+  numTables++;
+  
+}
+
+long long  add2Node(const char *node )
+{
+  int i;
+  const char table[]="nodes";
+  if ((i = GetTable(table)) == NOT_FOUND) {
+    cerr << "Node Table not open!" << endl;
+    return 0;
+  }
+
+  gist_m *gist = tables[i].gist;
+ 
+long long id = (long long) gist->addnode(node);
+if(id==0){
+     cerr << "can't  add Node" << endl;
+}
+  //if (gist->insert(key, klen, data, dlen) != RCOK) {
+     // cerr << "can't  add Node" << endl;
+  //}
+return id;
+}
