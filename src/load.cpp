@@ -6,18 +6,18 @@
 #include "md5.h"
 using namespace std;
 static char nodetable[] = "nodes";
+
 int loadrdf(const string rdf_file,const string database)
     {
-const char *table = database.data();
+    const char *table = database.data();
+    // exit(rdf_file);
     ifstream _fin(rdf_file.c_str());
     if(!_fin)
     {
     cerr<<"fair to open~~"<<rdf_file<<endl;
     exit(0);
     }
-    CommandCreateNodefile(nodetable);
-    TripleWithObjType* triple_array =new TripleWithObjType[RDFParser::TRIPLE_NUM_PER_GROUP];
-    RDFParser _parser(_fin);
+ //   CommandCreateNodefile(nodetable);
     ifstream _file;
     _file.open(database.c_str(),ios::in);
      if(!_file)
@@ -31,6 +31,21 @@ const char *table = database.data();
 		_file.close();
 		CommandOpen(table);
 	}
+        ifstream nodes;
+        nodes.open("nodes",ios::in);
+     if(!nodes)
+    {
+        cout<<"nodetable not exist...cteate now"<<endl;
+        CommandCreateNodefile(nodetable);
+    }
+      else
+    {
+        cout<<"nodetable found. insert soon"<<endl;
+        nodes.close();
+        CommandOpen(nodetable);
+    }
+     TripleWithObjType* triple_array =new TripleWithObjType[RDFParser::TRIPLE_NUM_PER_GROUP];
+     RDFParser _parser(_fin);
     while(true)
     {
      int parse_triple_num = 0;
@@ -43,30 +58,31 @@ const char *table = database.data();
         // for subject
          string _sub = triple_array[i].getSubject();
          string _subh=MD5(_sub).toString();
-      
-         const  char *sub = _subh.c_str();
+        const char *sub=_sub.c_str();
+           char *subhs =(char *)_subh.c_str();
          long long subid=add2Node(sub);
-         cout<<"sub id: "<<subid<<endl;
-            cout<<"SSSSSSSSSS～～～～～～～～～"<<_sub<<"   MD5:"<<_subh<<endl;
-         CommandInsert(table, const_cast<char*>(sub) ,strlen(sub), &subid, sizeof(subid));
+            cout<<"sub :"<<_sub<<"  sub id: "<<subid<<"   MD5:"<<subhs<<endl;
+         CommandInsert(table, subhs ,strlen(subhs), &subid, sizeof(subid));
 
          //For predicate
           string _pre = triple_array[i].getPredicate();
           string _preh=MD5(_pre).toString();
-          const char *pre = _preh.c_str();
+          char *pre = (char *)_pre.c_str();
+          const char *prehs = _preh.c_str();
           long long preid=add2Node(pre);
-           cout<<"pre id: "<<preid<<endl;
-     //     cout<<"PPPPPPPPPP～～～～～～～～～"<<pre<<"   MD5:"<<_preh<<endl;
-          CommandInsert(table, const_cast<char*>(pre) ,strlen(pre), &preid, sizeof(preid));
+          // cout<<"pre id: "<<preid<<endl;
+          cout<<"pre: "<<pre<<"  pre id: "<<preid<<"   MD5:"<<_preh<<endl;
+          CommandInsert(table, const_cast<char*>(prehs) ,strlen(prehs), &preid, sizeof(preid));
        
          //For object
             string _obj = triple_array[i].getObject();
             string _objh=MD5(_obj).toString();
-           const  char *obj = _objh.c_str();
-            long long objid=add2Node(obj);
-             cout<<"obj id: "<<objid<<endl;
-            CommandInsert(table, const_cast<char*>(obj) ,strlen(obj), &objid, sizeof(objid));
-           //  cout<<"OOOOOOOOOOO～～～～～～～～～"<<obj<<"   MD5:"<<_objh<<endl;
+           const  char *obj = _obj.c_str();
+           const  char *objhs = _objh.c_str();
+         //   long long objid=add2Node(obj);
+             //cout<<"obj id: "<<objid<<endl;
+          //  CommandInsert(table, const_cast<char*>(objhs) ,strlen(objhs), &objid, sizeof(objid));
+          //   cout<<"obj:"<<_obj<<" obj id: "<<"   MD5:"<<_objh<<endl;
         }
 
 break;
@@ -76,12 +92,15 @@ break;
    // int qu=1096;
    // int* qx;
     //qx=&qu;
-    //bt_query_t q(bt_query_t::bt_eq, new int(1096),NULL);
- 
-    char ww[]="801ee50a2a70654ecf6273f9754bee70";
-    bt_query_t q(bt_query_t::bt_eq,new char*(ww),NULL);
+   // bt_query_t q(bt_query_t::bt_eq, new int(1096),NULL);
+    char* p =new char[32];
+    char * a="478341015db373671537b490f1f32b88";
+    strcpy(p,a);
+    bt_query_t q(bt_query_t::bt_eq,p,NULL);
+
 
      CommandSelect(table,&q);
      CommandClose(table);
 return 1;
     }
+

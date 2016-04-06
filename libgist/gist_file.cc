@@ -358,10 +358,11 @@ if (strcmp(filetype,type)!=0)
     isOpen = true;
 
     // /* Reserve page 0 */
-    // char page[SM_PAGESIZE];
-    // memset(page, 0, SM_PAGESIZE);
-    // memcpy(page, magic, sizeof(magic));
-    // write(fileHandle, page, SM_PAGESIZE);
-    fileSize = 1;
+    int len=strlen(magic);
+     char page[len+1];
+     memset(page, 0, len);
+     memcpy(page, magic, sizeof(magic));
+     write(fileHandle, page, len);
+    //fileSize = 1;
     return(RCOK);
 }

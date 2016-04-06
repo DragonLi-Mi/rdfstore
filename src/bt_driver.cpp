@@ -12,9 +12,11 @@ printDatum(
     int dlen)
 {
     char* k = (char* )key;
-    long* d = (long* ) (data);
+   long* d = (long* ) (data);
 
-    printf("%s: %ld\n", k, *d);
+
+
+    printf("%s: %ld\n", k, d);
 }
 
 //char *identStr = "string B-tree";

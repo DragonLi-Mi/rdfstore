@@ -10,4 +10,5 @@
 using namespace std;
 //void encode_RDF(const string rdf_file);
 int loadrdf(const string rdf_file,const string database);
+// int exist(const string filename);
 #endif
