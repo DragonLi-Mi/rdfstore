@@ -40,18 +40,28 @@ public:
 class TripleWithObjType : public Triple
 {
 public:
+    //char object_type;
     char object_type;
 
     static const char ENTITY = 'e';
     static const char LITERA = 'l';
+    static const char DATE = 'd';
+    static const char TIME = 't';
+    static const char INTRGER = 'i';
+    static const char BOOLEAN = 'b';
+    static const char DOUBLE = 'u';
+    static const char DECIMAL = 'l';
 
     TripleWithObjType();
+  //  TripleWithObjType(const string& _s, const string& _p, const string& _o, const char& _o_type = ' ');
     TripleWithObjType(const string& _s, const string& _p, const string& _o, const char& _o_type = ' ');
+
     TripleWithObjType(const TripleWithObjType& _triple_with_objtype);
 
     TripleWithObjType& operator=(const TripleWithObjType& _triple_with_objtype);
 
     void setObjType(const char &_o_type);
+    const char getObjectType()const;
 
     bool isObjEntity()const;
     bool isObjLiteral()const;

@@ -95,7 +95,7 @@ gist_file::open(const char *filename)
     // Verify that the magic words are there
     char page[SM_PAGESIZE];
     read(fileHandle, page, SM_PAGESIZE);
-    if (memcmp(page, magic, sizeof(magic))) { 
+    if (memcmp(page, magic, sizeof(magic))) {
         ::close(fileHandle);
         return(eFILEERROR); // error: magic words not found
     }
@@ -112,7 +112,7 @@ gist_file::flush()
 {
     if (!isOpen) {
         return (eFILEERROR);
-    }           
+    }
 
     for (int i = 0; i < GISTBUFS; i++) {
         if (descrs[i].isDirty) {
@@ -164,9 +164,12 @@ gist_file::_write_page(shpid_t pageNo, char *page)
 long
 gist_file::_write_node(int buf, const char*      node)
 {
-    long  id = lseek(fileHandle, buf, SEEK_END);
-    if (id < 0) return (eFILEERROR);
-    int status = write(fileHandle, node, buf);
+    long id= lseek(fileHandle,0,SEEK_END);
+
+  int status = lseek(fileHandle, 1, SEEK_END);
+  //if (id < 0) return (eFILEERROR);
+
+    status = write(fileHandle, node, buf);
     if (status < 0) return (eFILEERROR);
     // std::cout<<"-----------------------------"<<status<<std::endl;
     //     std::cout<<"-----------------------------"<<buf<<std::endl;
@@ -180,6 +183,15 @@ gist_file::_read_page(shpid_t pageNo, char *page)
     int status = lseek(fileHandle, pageNo * SM_PAGESIZE, SEEK_SET);
     if (status < 0) return (eFILEERROR);
     status = read(fileHandle, page, SM_PAGESIZE);
+    if (status < 0) return (eFILEERROR);
+    return RCOK;
+}
+rc_t
+gist_file::_read_node(long nodeid, char *page)
+{
+    int status = lseek(fileHandle, 1, SEEK_SET);
+    if (status < 0) return (eFILEERROR);
+    status = read(fileHandle, page, sizeof(page));
     if (status < 0) return (eFILEERROR);
     return RCOK;
 }
@@ -201,7 +213,7 @@ gist_file::pinPage(shpid_t page)
 	// prepare the descr
 	descr = &descrs[index];
 	// write out page if dirty
-	if (descr->isDirty) { 
+	if (descr->isDirty) {
 	    if (_write_page(descr->pageNo, descr->page) != RCOK) {
 	        return NULL;
 	    }
@@ -251,7 +263,7 @@ gist_file::allocPage()
     if (index == invalidIdx) return (NULL);
     descr = &descrs[index];
     // write out page if dirty
-    if (descr->isDirty) { 
+    if (descr->isDirty) {
 	if (_write_page(descr->pageNo, descr->page) != RCOK) {
 	    return NULL;
 	}
@@ -281,7 +293,7 @@ gist_file::freePage(page_descr *descr)
 }
 
 
-shpid_t 
+shpid_t
 gist_file::findFreePage()
 {
     char buf[SM_PAGESIZE];
@@ -347,7 +359,7 @@ if (strcmp(filetype,type)!=0)
         return (eFILEERROR);
     }
 
-    
+
       fileHandle = ::open(filename, O_BINARY |O_RDWR | O_CREAT | O_TRUNC,
         S_IREAD | S_IWRITE);
 
@@ -363,6 +375,8 @@ if (strcmp(filetype,type)!=0)
      memset(page, 0, len);
      memcpy(page, magic, sizeof(magic));
      write(fileHandle, page, len);
+
+
     //fileSize = 1;
     return(RCOK);
 }

@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #ifdef LIBGIST
 #include <stdio.h>
-#else 
+#else
 #include <sm_int_2.h>
 #include <crash.h>
 #endif
@@ -27,7 +27,7 @@
 
 #ifndef WIN32
 #include <values.h> // for MAXDOUBLE
-#else 
+#else
 #define MAXDOUBLE 1.79769313486231570e+308 // taken from values.h on a Solaris system
 #endif
 
@@ -35,7 +35,7 @@
 const double gist_penalty_t::max_penalty = MAXDOUBLE;
 gist_ext_t* gist_ext_t::gist_ext_list[gist_ext_t::gist_numext];
 
-/* 
+/*
  * gist_m
  */
 
@@ -83,7 +83,7 @@ gist_m::_new_page(
 }
 
 #ifdef LIBGIST
-bool 
+bool
 gist_m::is_empty()
 {
     lpid_t root(0, 0, rootNo);
@@ -170,7 +170,7 @@ gist_m::create(
     // W_DO(file.flush());
     return RCOK;
 }
-#else 
+#else
 rc_t
 gist_m::create(
     stid_t		stid,
@@ -234,7 +234,7 @@ gist_m::_locate_leaf(
 //     const lpid_t&   root, // root of index
 //     const char*    node, // node to  add
 //     const int               nodesize
-//     ) 
+//     )
 // {
 // //     lpid_t currPid = root;
 // //     gist_p page;
@@ -242,10 +242,10 @@ gist_m::_locate_leaf(
 
 // //     for (;;) {
 // //     W_DO(_fix_page(page, currPid, LATCH_EX));
-    
+
 // //         if (page._pp->space.usable()<nodesize)
 // //             {
-                
+
 // //             }
 
 
@@ -273,7 +273,7 @@ gist_m::_insert_leaf(
     // make sure that at least enough additional space needed
     // for the BP is available
     if (!page.is_root()) {
-        // compute additional space for BP: 
+        // compute additional space for BP:
 	// first extract and update the BP
 	const keyrec_t &bpTup = page.rec(gist_p::bpSlot);
 	w_assert3(bpTup.klen() <= gist_p::max_tup_sz);
@@ -318,9 +318,9 @@ gist_m::_insert_leaf(
 	bpChanged = false;
     }
 
-    // insert new item 
+    // insert new item
     rc_t status;
-    { 
+    {
 #ifndef LIBGIST
 	// switch logging off for leaf data insertion; this is logged logically later on
 	xct_log_switch_t log_off(OFF);
@@ -343,7 +343,7 @@ gist_m::_apply_update(
     // make sure at least the additional space needed for the BP update
     // is available
     if (!page.is_root()) {
-        // compute additional space for BP: 
+        // compute additional space for BP:
 
 	// first extract and update the BP
 	const keyrec_t &bpTup = page.rec(gist_p::bpSlot);
@@ -365,7 +365,7 @@ gist_m::_apply_update(
 	}
 
 	// compute the additional space
-	unsigned int total = align(bpv.len(0) + sizeof(keyrec_t)) - 
+	unsigned int total = align(bpv.len(0) + sizeof(keyrec_t)) -
 	    align(page.rec_size(gist_p::bpSlot));
 
 	if (total > page.usable_space()) return RC(eRECWONTFIT);
@@ -465,7 +465,7 @@ gist_m::_split_node(
     vec_t keyv;
     vec_t datav;
 
-    // if the left page doesnt have a BP (and its not a root, either), we have to 
+    // if the left page doesnt have a BP (and its not a root, either), we have to
     // compensate for the automatic adjustment of the slot index done in nrecs(),
     // rec() etc. by subtracting 1
     if (!leftHasBp) {
@@ -511,7 +511,7 @@ intCmp(
 #ifdef LIBGIST
 rc_t
 gist_m::insert(
-    const void*		key, 
+    const void*		key,
     const int	    	keyLen,
     const void*		dataPtr,
     const int	    	dataPtrLen)
@@ -526,7 +526,7 @@ rc_t
 gist_m::insert(
     const lpid_t& 	    root,
     gist_ext_t*		    ext,
-    const vec_t& 	    keyv, 
+    const vec_t& 	    keyv,
     const vec_t& 	    datav)
 {
 
@@ -646,64 +646,51 @@ gist_m::insert(
 
 
 
-long long 
-gist_m::addnode(
-    const char*      node)
+ rc_t
+gist_m::id2node(
+    long      nodeid,char *node)
         {
-            int buflen=strlen(node);
-        
+          char buf[500]={0};
+          file._read_node(nodeid, buf);
+          int i=0,j=0;
+      while (i<strlen(buf)) {
+        if(buf[i]!='\0')
+          {
+            printf("%s\t",buf[i] );
+            node[j]=buf[i];
+            j++;
+            i++;
+        }
+        else if (buf[i]='\0') {
+          std::cout<<"***********"<<  std::endl;
+            break;
+        }
+        else
+        {
 
-            long id= file._write_node(buflen, node);
+            std::cout<<"******2*****"<<  std::endl;
+
+          i++;
+        }
+      }
 
 
-            // lpid_t root(0, 0, rootNo);
-         //     gist_ustk stack;
-
-  //           lpid_t currPid = root;
-  //            gist_p page;
-  //           int index=0;
-  //           max_page = file.size();
-  //           cout<<"max_page: "<<max_page<<endl;
-  //            int notfull=1;
-
-  //   while(max_page>=0&&index<=max_page){
-  //           _fix_page(page, currPid, LATCH_EX);
-  //             if(page.enoughspace(node)){
-  //               notfull=0;
-  //               break;
-  //           }
-  //           else
-  //           {
-  //               currPid.page=currPid.page+1;
-  //           }
-  //   }
-  //       if (notfull ==0)
-  //       {
-  //          file.flush();
-  //           gist_p  newpage;
-  //       newpage.descr=file.allocPage();
-  //       newpage._pp=(page_s *)newpage.descr->page;
-  //        gistctrl_t hdr;
-  //       lpid_t rootPid(0, 0, rootNo);
-  //       hdr.root = rootPid;
-  //       hdr.level = 1;
-      
-  //        W_DO(newpage.format(lpid_t(0, 0, newpage.descr->pageNo), &hdr));
-
-  //       }
-  //        if (filefull ==0){
-  //      long long id = newpage.node_expand(node);
-  //       }
-  //      else{
-  // long long id = page.node_expand(node);
-  //      }
-  //      cout<<"node id "<<id<<endl;
-  //   return id;
-            //      W_DO(_locate_leaf(root, ext, stack, keyv, datav));
-          //   gist_p &leaf = stack.top()->page;
-            return id;
+    return RCOK;
         }
 
+
+long long
+gist_m::addnode(
+  const char*      node)
+{
+//  int buflen=strlen(node)+1;
+  //char tem[buflen]={0};
+  //strcpy(tem,node);
+//  tem[buflen-1]='\0';
+  //const char* n =tem;
+  long id= file._write_node(strlen(node), node);
+  return id;
+  }
 
 
 
@@ -784,7 +771,7 @@ rc_t
 gist_m::remove(
     const lpid_t&	root,
     gist_ext_t*		ext,
-    const vec_t& 	keyv,  
+    const vec_t& 	keyv,
     const vec_t& 	elem)
 {
     // construct a query for the given key
@@ -804,7 +791,7 @@ gist_m::remove(
     // run a query to find matching items
 #ifdef LIBGIST
     W_DO(fetch_init(cursor, query));
-#else 
+#else
     W_DO(fetch_init(root, ext, cursor, query));
 #endif
     for (;;) {
@@ -812,7 +799,7 @@ gist_m::remove(
 	if (eof) {
 	    // delete the stuff on the last page we visited
 	    if (page.is_fixed()) {
-		{ 
+		{
 #ifndef LIBGIST
                    // this is logged logically a little later
 		   xct_log_switch_t log_off(OFF);
@@ -840,7 +827,7 @@ gist_m::remove(
 	    }
 #ifdef LIBGIST
 	    W_DO(_fix_page(page, lpid_t(0, 0, leaf), LATCH_EX));
-#else 
+#else
 	    W_DO(_fix_page(page, lpid_t(root.stid(), leaf), LATCH_EX));
 #endif
 	    numMatches = 0;
@@ -851,7 +838,7 @@ gist_m::remove(
 	numMatches++;
 #else
 	// Shore:
-	// we only remove those leaf entries that match the query and contain the 
+	// we only remove those leaf entries that match the query and contain the
 	// same data ptr (or the parameter data ptr is empty)
 	cvec_t dv(data, dlen);
 	if (elem.size() == 0 || elem == dv) {
@@ -870,7 +857,7 @@ gist_m::fetch_init(
 {
     lpid_t root(0, 0, rootNo);
     cursor.ext = ext;
-#else 
+#else
 rc_t
 gist_m::fetch_init(
     const lpid_t& 	root,
@@ -938,7 +925,7 @@ gist_m::fetch(
     void* 	   	key,
     smsize_t&		klen,
     void* 		el,
-    smsize_t&		elen, 
+    smsize_t&		elen,
     bool& 	    	eof)
 #endif
 {
@@ -970,7 +957,7 @@ gist_m::_fetch(
 	cursor.stack.pop(e);
 
         if (e.typ == gist_lstk_entry::eItem) {
-	    // this is a leaf entry 
+	    // this is a leaf entry
 	    if (keyLen < e.val.item.keyLen || dataPtrLen < e.val.item.dataPtrLen) {
 		// not enough space to copy the items
 		delete e.val.item.key;
@@ -1009,7 +996,7 @@ gist_m::_fetch(
 	    } else {
 	        cursor.stack.push(tup.child());
 	    }
-	    
+
 	}
 	_unfix_page(page);
     }
@@ -1216,7 +1203,7 @@ gist_ustk::~gist_ustk()
 {
 }
 
-void 
+void
 gist_ustk::push(
     const gist_p&	page,
     int2 		idx)
@@ -1262,7 +1249,7 @@ gist_ustk::is_root(int fromTop)
 }
 
 
-/* 
+/*
  * gist_lstk
  */
 
@@ -1370,7 +1357,7 @@ gist_lstk::pop(
     }
 }
 
-void 
+void
 gist_lstk::_push(
     const gist_lstk_entry*	e)
 {
@@ -1428,4 +1415,3 @@ gist_cursor_t::gist_cursor_t()
 gist_cursor_t::~gist_cursor_t()
 {
 }
-

@@ -1,3 +1,7 @@
+
+
+
+
 //	gist_file.h
 // Copyright (c) 1997, Regents of the University of California
 // $Header: /usr/local/devel/GiST/libgist/src/libgist/gist_file.h,v 1.2 1997/12/05 23:08:43 marcel Exp $
@@ -15,7 +19,7 @@
 class gist_file {
 
 public:
-    
+
 
     gist_file();
     ~gist_file();
@@ -27,7 +31,7 @@ public:
     rc_t open(const char *filename);
     // open this file as a Gist file for subsequent operations
 
-    rc_t flush(); 
+    rc_t flush();
     // write out all dirtied pages
 
     rc_t close();
@@ -41,7 +45,7 @@ public:
         shpid_t pageNo; // pageno on disk
 	char *page; // pointer to in-mem page
 	bool isDirty; // true if modified since pinned
-	int pinCount; 
+	int pinCount;
 
     };
 
@@ -62,6 +66,7 @@ public:
     void setDirty(page_descr *descr, bool isDirty);
     // change that page's status
     long  _write_node(int buf, const  char*      node);
+    rc_t _read_node(long nodeid, char *page);
 
 protected:
 
@@ -82,6 +87,7 @@ protected:
 
     rc_t _write_page(shpid_t pageNo, char *page);
     rc_t _read_page(shpid_t pageNo, char *page);
+
     int findFreeBuffer();
     shpid_t findFreePage();
     rc_t returnPage(shpid_t page);

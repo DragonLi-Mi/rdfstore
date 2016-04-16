@@ -18,7 +18,7 @@
 #include "gist_defs.h" // global constants
 
 #ifdef LIBGIST
-#include "vec_t.h" 
+#include "vec_t.h"
 #endif
 
 class gist_cursor_t;
@@ -47,7 +47,7 @@ public:
     static rc_t 		insert(
 	const lpid_t& 		    root,
 	gist_ext_t*		    ext,
-	const vec_t& 		    key, 
+	const vec_t& 		    key,
 	const vec_t& 		    elem);
 
     static rc_t 		remove(
@@ -71,7 +71,7 @@ public:
 	void* 		    	    key,
 	smsize_t&		    klen,
 	void* 			    el,
-	smsize_t&		    elen, 
+	smsize_t&		    elen,
 	bool& 		    	    eof);
 
     static bool 		is_empty(
@@ -98,13 +98,16 @@ public:
 	gist_ext_t*		    ext);
 
     rc_t			close();
-    rc_t			flush(); 
+    rc_t			flush();
 // add a node
         long long 			addnode(
 	const char*		 node);
+  rc_t
+ id2node(
+     long      nodeid,char *node);
     // insert a single key
     rc_t			insert(
-	const void*		    key, 
+	const void*		    key,
 	const int	    	    keyLen,
 	const void*		    dataPtr,
 	const int		    dataPtrLen);
@@ -139,7 +142,7 @@ public:
     rc_t 			dump(
         shpid_t 	    	    pgno = 0);
 
-protected: 
+protected:
     // State
     gist_ext_t *ext;
     bool isOpen; // true if opened successfully
@@ -152,7 +155,7 @@ protected:
 
 private:
 
-    // 
+    //
     enum {
         bpUpdated = 0x01,
 	itemInserted = 0x02,
@@ -233,8 +236,8 @@ private:
 	gist_p&			    page,
 	gist_ustk&		    stack,
 	int 			    stkIdx,
-	int 			    rightEntries[], 
-	int 			    numRight, 
+	int 			    rightEntries[],
+	int 			    numRight,
 	gist_p&			    rightPage,
 	vec_t&			    leftBp,
 	vec_t&			    rightBp);

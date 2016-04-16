@@ -39,7 +39,7 @@ class TurtleParser
    class Lexer {
       public:
       /// Possible tokens
-      enum Token { Token_Eof, Token_Dot, Token_Colon, Token_Comma, Token_Semicolon, Token_LBracket, Token_RBracket, Token_LParen, Token_RParen, Token_At, Token_Type, Token_Integer, Token_Decimal, Token_Double, Token_Name, Token_A, Token_True, Token_False, Token_String, Token_URI };
+      enum Token { Token_Eof, Token_Dot, Token_Colon, Token_Comma, Token_Semicolon, Token_LBracket, Token_RBracket, Token_LParen, Token_RParen, Token_At, Token_Type, Token_Integer, Token_Decimal,Token_Double, Token_Name, Token_A, Token_True, Token_False, Token_String, Token_URI,Token_Date,Token_Time };
 
       private:
       /// The input

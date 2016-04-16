@@ -14,6 +14,7 @@
 #define MAX_TABLES 10
 #define NOT_FOUND (-1)
 using namespace std;
+
 struct Table
 {
   char *name;
@@ -35,10 +36,10 @@ int GetTable(const char *name)
 
 void CommandCreate(const char *table)
 {
-  if (numTables == MAX_TABLES) { 
-    cout << "This progam can only handle " 
-	 << MAX_TABLES << " open tables" << endl; 
-    return; 
+  if (numTables == MAX_TABLES) {
+    cout << "This progam can only handle "
+	 << MAX_TABLES << " open tables" << endl;
+    return;
   }
 
   gist_m *gist = new gist_m;
@@ -61,10 +62,10 @@ void CommandCreate(const char *table)
 #if 0
 void CommandLoad(const char *table, const char *loadfile)
 {
-  if (numTables == MAX_TABLES) { 
-    cout << "This progam can only handle " 
-	 << MAX_TABLES << " open tables" << endl; 
-    return; 
+  if (numTables == MAX_TABLES) {
+    cout << "This progam can only handle "
+	 << MAX_TABLES << " open tables" << endl;
+    return;
   }
 
   int i, count;
@@ -86,10 +87,10 @@ void CommandLoad(const char *table, const char *loadfile)
 void
 CommandBulkInsert(const char *table, const char *loadfile)
 {
-  if (numTables == MAX_TABLES) { 
-    cout << "This progam can only handle " 
-	 << MAX_TABLES << " open tables" << endl; 
-    return; 
+  if (numTables == MAX_TABLES) {
+    cout << "This progam can only handle "
+	 << MAX_TABLES << " open tables" << endl;
+    return;
   }
 
   int i, count;
@@ -118,10 +119,10 @@ void CommandDrop(const char *table)
 
 void CommandOpen(const char *table)
 {
-  if (numTables == MAX_TABLES) { 
-    cout << "This progam can only handle " 
-	 << MAX_TABLES << " open tables" << endl; 
-    return; 
+  if (numTables == MAX_TABLES) {
+    cout << "This progam can only handle "
+	 << MAX_TABLES << " open tables" << endl;
+    return;
   }
 
   if (GetTable(table) != NOT_FOUND) {
@@ -203,6 +204,55 @@ void CommandSelect(const char *table,
   printf("retrieved %d items\n", cnt);
 }
 
+void Select(const char *table,
+       void *query, vector<result_item> &result )
+{
+  int i;
+
+  if ((i=GetTable(table)) == NOT_FOUND) {
+    cerr << "Table is not open!" << endl;
+    return;
+  }
+
+  gist_m *gist = tables[i].gist;
+  gist_cursor_t cursor;
+  if (gist->fetch_init(cursor, query) != RCOK) {
+      cerr << "can't initialize cursor" << endl;
+      return;
+  }
+
+  bool eof;
+  char key[gist_p::max_tup_sz];
+  smsize_t klen;
+  char data[gist_p::max_tup_sz];
+  smsize_t dlen;
+  int cnt = 0;
+  struct result_item item;
+  string s_key,s_data;
+  vector<result_item> v;
+
+
+  for (;;) {
+      klen = gist_p::max_tup_sz;
+      dlen = gist_p::max_tup_sz;
+      if (gist->fetch(cursor, (void *) key, klen, (void *) data, dlen, eof) != RCOK) {
+          cerr << "can't fetch from cursor" << endl;
+    return;
+      }
+      if (eof) break;
+
+      // print key and data
+      printDatum(key, klen, data, dlen);
+      s_key = key;
+      s_data =data;
+      item.key = s_key;
+      item.value = s_data;
+      v.push_back(item);
+      cnt++;
+  }
+  result = v;
+  printf("retrieved %d items\n", cnt);
+}
 void CommandDelete(const char *table,
 		   void *query)
 {
@@ -323,10 +373,10 @@ void CommandDump(const char *table, shpid_t pgno)
 void CommandCreateNodefile(const char *table)
 {
    const char  *filetype = "nodes";
-  if (numTables == MAX_TABLES) { 
-    cout << "This progam can only handle " 
-   << MAX_TABLES << " open tables" << endl; 
-    return; 
+  if (numTables == MAX_TABLES) {
+    cout << "This progam can only handle "
+   << MAX_TABLES << " open tables" << endl;
+    return;
   }
 
   gist_m *gist = new gist_m;
@@ -344,7 +394,7 @@ void CommandCreateNodefile(const char *table)
   tables[numTables].name = strdup(table);
   tables[numTables].gist = gist;
   numTables++;
-  
+
 }
 
 long long  add2Node(const char *node )
@@ -357,7 +407,7 @@ long long  add2Node(const char *node )
   }
 
   gist_m *gist = tables[i].gist;
- 
+
 long long id = (long long) gist->addnode(node);
 if(id==0){
      cerr << "can't  add Node" << endl;
@@ -366,4 +416,23 @@ if(id==0){
      // cerr << "can't  add Node" << endl;
   //}
 return id;
+}
+
+string Id2node(const long nodeid ){
+       long pid = nodeid/BUFSIZE;
+       long offset =nodeid%BUFSIZE;  int i;
+       const char table[]="nodes";
+         if ((i = GetTable(table)) == NOT_FOUND) {
+           cerr << "Node Table not open!" << endl;
+           return 0;
+         }
+
+         gist_m *gist = tables[i].gist;
+        char node[500]={0};
+       gist->id2node(nodeid,node);
+       string nodestring(node);
+       cout<<"ID to node"<<nodestring<<endl;
+        return nodestring;
+
+
 }

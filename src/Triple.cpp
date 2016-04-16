@@ -103,6 +103,7 @@ TripleWithObjType::TripleWithObjType(const string& _s, const string& _p, const s
     this->object_type = _o_type;
 }
 
+
 TripleWithObjType::TripleWithObjType(const TripleWithObjType& _triple_with_objtype):Triple(_triple_with_objtype)
 {
     this->object_type = _triple_with_objtype.object_type;
@@ -118,6 +119,10 @@ TripleWithObjType& TripleWithObjType::operator=(const TripleWithObjType& _triple
 void TripleWithObjType::setObjType(const char &_o_type)
 {
     this->object_type = _o_type;
+}
+const char TripleWithObjType::getObjectType() const
+{
+  return  this->object_type;
 }
 
 bool TripleWithObjType::isObjEntity()const

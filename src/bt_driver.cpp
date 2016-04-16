@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "gist.h"
 #include "gist_btree.h"
+#include <string>
 
 void
 printDatum(
@@ -12,11 +13,13 @@ printDatum(
     int dlen)
 {
     char* k = (char* )key;
+      //  std::string k = (char* )key;
+
    long* d = (long* ) (data);
 
 
 
-    printf("%s: %ld\n", k, d);
+    printf("%s: %ld\n", k, *d);
 }
 
 //char *identStr = "string B-tree";

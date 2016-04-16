@@ -44,6 +44,42 @@ string RDFParser::parseFile(TripleWithObjType* _triple_array, int& _triple_num)
 			_object = "\"" + _object + "\"@" + _objectSubType;
 			_objectTypec = 'l';
 		}
+		else if (_objectType == Type::Type_Date)
+		{
+			_object = "\"" + _object + "\"";
+			_objectTypec = 'd';
+
+		}
+		else if (_objectType == Type::Type_Time)
+		{
+			_object = "\"" + _object + "\"";
+			_objectTypec = 't';
+
+		}
+		else if (_objectType == Type::Type_Integer)
+		{
+			_object = "\"" + _object + "\"";
+			_objectTypec = 'i';
+
+		}
+		else if (_objectType == Type::Type_Boolean)
+		{
+			_object = "\"" + _object + "\"";
+			_objectTypec = 'b';
+
+		}
+		else if (_objectType == Type::Type_Double)
+		{
+			_object = "\"" + _object + "\"";
+			_objectTypec = 'u';
+
+		}
+		else if (_objectType == Type::Type_Decimal)
+		{
+			_object = "\"" + _object + "\"";
+			_objectTypec = 'c';
+
+		}
 		else
 		{
 			_object = "\"" + _object + "\"";

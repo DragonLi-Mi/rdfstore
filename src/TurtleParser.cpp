@@ -562,6 +562,7 @@ void TurtleParser::parseObject(std::string& object,Type::Type_ID& objectType,std
 {
    Lexer::Token token=lexer.next(object);
    objectSubType="";
+
    switch (token) {
       case Lexer::Token_URI:
          // URI
@@ -647,6 +648,10 @@ void TurtleParser::parseObject(std::string& object,Type::Type_ID& objectType,std
                   objectType=Type::Type_Double;
                } else if (type=="http://www.w3.org/2001/XMLSchema#boolean") {
                   objectType=Type::Type_Boolean;
+               } else if (type=="http://www.w3.org/2001/XMLSchema#date") {
+                  objectType=Type::Type_Date;
+               } else if (type=="http://www.w3.org/2001/XMLSchema#time") {
+                  objectType=Type::Type_Time;
                } else {
                   objectType=Type::Type_CustomType;
                   objectSubType=type;
