@@ -25,7 +25,7 @@ void CommandInsert(const char *table, void * key, int klen, void *data, int dlen
 void CommandQuit();
 void CommandDump(const char *table, shpid_t pgno);
 void CommandCreateNodefile(const char *table);
-long long  add2Node(const char *node );
+long long  add2Node( char *node );
 string Id2node(const long nodeid );
 
 extern void printDatum(
@@ -39,6 +39,7 @@ extern void printDatum(
 extern char *identStr;
 //char *identStr = "integer B-tree";
 extern gist_ext_t *extension;
+//extern bt_ext_t *extension
 //gist_ext_t *extension = &bt_int_ext;
 
 #endif // COMMAND_H

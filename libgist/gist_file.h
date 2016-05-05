@@ -65,7 +65,7 @@ public:
 
     void setDirty(page_descr *descr, bool isDirty);
     // change that page's status
-    long  _write_node(int buf, const  char*      node);
+    long  _write_node(int buf,   char*      node);
     rc_t _read_node(long nodeid, char *page);
 
 protected:

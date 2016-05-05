@@ -23,7 +23,9 @@ enum latch_mode_t { LATCH_NL = 0, LATCH_SH = 1, LATCH_EX = 2 };
 typedef short   int2;
 typedef long    int4;
 typedef unsigned char	uint1;
-typedef unsigned short	uint2;
+//typedef unsigned short	uint2;
+typedef unsigned int uint2;
+
 typedef unsigned long	uint4;
 typedef uint4 smsize_t;
 

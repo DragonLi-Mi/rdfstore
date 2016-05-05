@@ -405,6 +405,7 @@ gist_m::_split(
     vec_t&		leftBp, // BP for page
     vec_t&		rightBp) // BP for rightChild
 {
+    
     if (stack.is_root(stkIdx)) {
         // do root split
 	gist_p leftChild;
@@ -456,6 +457,8 @@ gist_m::_split_node(
     cvec_t&		leftBp, // BP of page to split
     cvec_t&		rightBp) // BP of right sibling
 {
+    
+    std::cout<<"split node !!!!!!!!!!"<<std::endl;
     // first, move entries to new right sibling
     W_DO(right.insert(rightBp, cvec_t(), gist_p::bpSlot, 0));
         // we promised there'd be a BP
@@ -650,38 +653,34 @@ gist_m::insert(
 gist_m::id2node(
     long      nodeid,char *node)
         {
-          char buf[500]={0};
+          char buf[501]={0};
           file._read_node(nodeid, buf);
+ 
           int i=0,j=0;
       while (i<strlen(buf)) {
         if(buf[i]!='\0')
           {
-            printf("%s\t",buf[i] );
             node[j]=buf[i];
             j++;
             i++;
         }
-        else if (buf[i]='\0') {
-          std::cout<<"***********"<<  std::endl;
+        else if (buf[i]=='\0'&&i!=0) {
             break;
         }
         else
         {
-
-            std::cout<<"******2*****"<<  std::endl;
-
           i++;
         }
       }
 
-
+  //  printf("%s\n",node );
     return RCOK;
         }
 
 
 long long
 gist_m::addnode(
-  const char*      node)
+   char*      node)
 {
 //  int buflen=strlen(node)+1;
   //char tem[buflen]={0};

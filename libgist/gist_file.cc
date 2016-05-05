@@ -154,6 +154,7 @@ gist_file::findFreeBuffer()
 rc_t
 gist_file::_write_page(shpid_t pageNo, char *page)
 {
+   std::cout<<"_write_page:"<<page<<std::endl;
     int status = lseek(fileHandle, pageNo * SM_PAGESIZE, SEEK_SET);
     if (status < 0) return (eFILEERROR);
     status = write(fileHandle, page, SM_PAGESIZE);
@@ -162,18 +163,12 @@ gist_file::_write_page(shpid_t pageNo, char *page)
 }
 
 long
-gist_file::_write_node(int buf, const char*      node)
-{
-    long id= lseek(fileHandle,0,SEEK_END);
+gist_file::_write_node(int buf, char*      node)
+{    
 
-  int status = lseek(fileHandle, 1, SEEK_END);
-  //if (id < 0) return (eFILEERROR);
-
-    status = write(fileHandle, node, buf);
+  long id = lseek(fileHandle, 1, SEEK_END);
+   int  status = write(fileHandle, node, buf);
     if (status < 0) return (eFILEERROR);
-    // std::cout<<"-----------------------------"<<status<<std::endl;
-    //     std::cout<<"-----------------------------"<<buf<<std::endl;
-
     return id;
 }
 
@@ -189,9 +184,9 @@ gist_file::_read_page(shpid_t pageNo, char *page)
 rc_t
 gist_file::_read_node(long nodeid, char *page)
 {
-    int status = lseek(fileHandle, 1, SEEK_SET);
+    int status = lseek(fileHandle, nodeid, SEEK_SET);
     if (status < 0) return (eFILEERROR);
-    status = read(fileHandle, page, sizeof(page));
+    status = read(fileHandle,page, 500);
     if (status < 0) return (eFILEERROR);
     return RCOK;
 }

@@ -306,14 +306,22 @@ gist_p::insert_expand(
 	_compress();
 	assert(contig_space() >= total);
     }
-
+    std::cout<<"inserting expand"<<std::endl;
     if (idx != _pp->nslots)    {
 	//  Shift left neighbor slots further to the left
-	memcpy(&_pp->slot[-(_pp->nslots + cnt - 1)],
-	       &_pp->slot[-(_pp->nslots - 1)], 
-	       (_pp->nslots - idx) * sizeof(slot_t));
-    }
+        std::cout<<"312:_____________"<<_pp->nslots<<" "<<cnt<<std::endl;
 
+	// memcpy(&_pp->slot[-(_pp->nslots + cnt - 1)],
+	//        &_pp->slot[-(_pp->nslots - 1)], 
+	//        (_pp->nslots - idx) * sizeof(slot_t));
+    int len=_pp->nslots - idx;
+    for (int i=0;i<len;i++) _pp->slot[-(_pp->nslots-i)]=_pp->slot[-(_pp->nslots-i-1)];
+
+
+    
+
+    std::cout<<"inserting expand2"<<std::endl<<"~"<<std::endl;
+    }
     //  Fill up the slots and data
     register slot_t* p = &_pp->slot[-idx];
     for (i = 0; i < cnt; i++, p--)  {
@@ -426,6 +434,7 @@ void
 gist_p::_compress(int idx)
 {
 
+std::cout<<"_compress~~~~~~~~"<<std::endl;
     assert(idx < 0 || idx < _pp->nslots);
     
     //  Copy data area over to scratch
@@ -545,7 +554,9 @@ gist_p::is_fixed() const
 char*
 keyrec_t::_body() const
 {
-    return ((char*) &_hdr) + sizeof(_hdr);
+   
+
+   return ((char*) &_hdr) + sizeof(_hdr);
 }
 #endif // ifdef LIBGIST
 

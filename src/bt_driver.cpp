@@ -22,11 +22,12 @@ printDatum(
     printf("%s: %ld\n", k, *d);
 }
 
-//char *identStr = "string B-tree";
-char *identStr = "int B-tree";
+char *identStr = "string B-tree";
+//char *identStr = "int B-tree";
 
 
-gist_ext_t *extension = &bt_int_ext;
+//gist_ext_t *extension = bt_int_ext;
 
 //gist_ext_t *extension = &bt_str_ext;
+bt_ext_t *extension = &bt_str_ext;
 

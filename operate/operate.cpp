@@ -397,7 +397,7 @@ void CommandCreateNodefile(const char *table)
 
 }
 
-long long  add2Node(const char *node )
+long long  add2Node(char *node )
 {
   int i;
   const char table[]="nodes";
@@ -407,6 +407,7 @@ long long  add2Node(const char *node )
   }
 
   gist_m *gist = tables[i].gist;
+
 
 long long id = (long long) gist->addnode(node);
 if(id==0){
@@ -431,7 +432,6 @@ string Id2node(const long nodeid ){
         char node[500]={0};
        gist->id2node(nodeid,node);
        string nodestring(node);
-       cout<<"ID to node"<<nodestring<<endl;
         return nodestring;
 
 

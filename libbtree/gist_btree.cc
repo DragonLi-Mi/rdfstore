@@ -153,6 +153,7 @@ ubt_ext_t::pickSplit(
     void *rightBp,
     int &rightLen)
 {
+   std::cout<<"split!!!!!!!!!!!"<<std::endl;
     SortItem items[gist_p::max_scnt];
     int itemCnt = pcursor.numElems;
     int totalCnt = 0;
@@ -335,7 +336,38 @@ str_cmp(const void *a, const void *b)
 {
     if (*((const char *) a) == 0) return -1; // always smaller
     if (*((const char *) a) == 1) return 1; // always larger
-    return (strcmp((const char *) a, (const char *) b));
+  //   register const unsigned char *s1=(const unsigned char*)a;
+  //   register const unsigned char *s2=(const unsigned char*)b;
+  //   int len1 =strlen((char*)a);
+  //    int len2 =strlen((char*)b);
+  //    int len;
+  // if (len1>=len2)
+  // {
+  //     len=len2;
+  // }
+  // else
+  //   len=len1;
+  //   int i=1;
+  //   unsigned char c1,c2;
+  //   do{
+  //       c1=(unsigned char)*s1++;
+  //       c2=(unsigned char)*s2++;
+      
+  //       if (i==len&&c1==c2)
+  //       {
+            
+  //           return 0;
+  //       }
+
+  //       if(c1=='\0'||c2=='\0'){
+  //           return 0 ;
+  //       }
+  //         i++;
+  //   }while(c1==c2&&i<=len);
+  //   return c1-c2;
+
+    
+   return (strcmp((const char *) a, (const char *) b));
 }
 
 static const void *
@@ -464,7 +496,7 @@ bt_ext_t::search(
 		hit = true;
 		break;
 	    case bt_query_t::bt_eq:
-	        if (keyCmp(page.rec(slot).key(), q->val1) == 0) hit = true;
+	        if (keyCmp(q->val1,page.rec(slot).key()) == 0){ hit = true;  printf("hit!!!");}
 		break;
 	    case bt_query_t::bt_lt:
 	        if (slot != end || keyCmp(page.rec(slot).key(), q->val1) < 0) {
@@ -478,8 +510,10 @@ bt_ext_t::search(
 	        if (slot != start) hit = true;
 		break;
 	    case bt_query_t::bt_ge:
-	        if (slot != start || keyCmp(page.rec(slot).key(), q->val1) >= 0) {
-		    hit = true;
+	     //   if (slot != start || keyCmp(page.rec(slot).key(), q->val1) >= 0) {
+                        if (slot != start || keyCmp(q->val1 ,page.rec(slot).key())>= 0) {
+		 
+                         hit = true;
 		}
 		break;
 	    case bt_query_t::bt_betw:
@@ -696,11 +730,20 @@ bt_ext_t::_binSearch(
     const void* midkey;
     const void* middata;
     int res;
+    for(int j=0;j<=hi;j++){
+        const keyrec_t& tup = page.rec(j);
+        midkey = tup.key();
+        printf("j:%d %s\n", j,(char*)midkey);
+    }
 
     for (;;) {
 	mid = (hi + lo) / 2;
+    // printf("hi:%d   lo:%d mid:%d\n",hi,lo,mid);
         const keyrec_t& tup = page.rec(mid);
 	midkey = tup.key();
+               // printf("_____M: %s    %d\n", (char*)midkey,strlen((char*)midkey));
+               // printf("_____K: %s    %d\n", (char*)key,strlen((char*)key));
+               //printf("_______strcmp: %d\n", strcmp((char*)midkey,(char*)key));
 	if (page.is_leaf()) {
 	    middata = tup.elem();
 	} else {
@@ -710,6 +753,7 @@ bt_ext_t::_binSearch(
 	res = keyCmp(key, midkey);
 	if (!keyOnly && res == 0) {
 	    res = dataCmp(data, middata);
+        printf("data CMP:   %d\n",res );
 	}
 	if (res < 0) {
 	    // key is smaller than midpoint
@@ -720,7 +764,9 @@ bt_ext_t::_binSearch(
 	    // found an exact match
 	    return mid;
 	}
-	if (hi < lo) return hi;
+	if (hi < lo) {
+
+        return hi;}
     }
 #if 0 // just for explanatory purposes
     if (res < 0) {

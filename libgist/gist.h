@@ -101,7 +101,7 @@ public:
     rc_t			flush();
 // add a node
         long long 			addnode(
-	const char*		 node);
+	 char*		 node);
   rc_t
  id2node(
      long      nodeid,char *node);
