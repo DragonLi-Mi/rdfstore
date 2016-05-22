@@ -7,7 +7,7 @@ export  CC
 DEFINES = -DUNIX -DLIBGIST
 export DEFINES
 
-CFLAGS = -g -Wall -Wno-unused $(DEFINES)
+CFLAGS = -g -Wall -std=c++11 -Wno-unused $(DEFINES)
 export CFLAGS
 
 GPPINCL = /usr/include
@@ -19,11 +19,11 @@ LDFLAGS = -L ./lib
 
 all: LIBGIST LIBBTREE OPERATE HLOAD
 
-LIBGIST: 
-	cd libgist ; $(MAKE) 
+LIBGIST:
+	cd libgist ; $(MAKE)
 
 LIBBTREE:
-	cd libbtree ; $(MAKE) 
+	cd libbtree ; $(MAKE)
 
 OPERATE:
 	cd operate ; $(MAKE)
@@ -52,12 +52,13 @@ HLOAD: LIBGIST LIBBTREE OPERATE
 #	$(CC) -c $(CFLAGS) $(INCS) operate.cpp
 
 clean:
-	
-	cd libgist ; $(MAKE) clean 
-	cd libbtree ; $(MAKE) clean 
+
+	cd libgist ; $(MAKE) clean
+	cd libbtree ; $(MAKE) clean
 	cd src ; $(MAKE) clean
-	cd operate ; $(MAKE) clean  
-	
+	cd operate ; $(MAKE) clean
+	rm -f ./SPO ./OSP ./POS ./test ./nodes
+
 #	makedepend
 
 

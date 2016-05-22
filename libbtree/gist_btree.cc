@@ -496,7 +496,7 @@ bt_ext_t::search(
 		hit = true;
 		break;
 	    case bt_query_t::bt_eq:
-	        if (keyCmp(q->val1,page.rec(slot).key()) == 0){ hit = true;  printf("hit!!!");}
+	        if (keyCmp(q->val1,page.rec(slot).key()) == 0){ hit = true;  }
 		break;
 	    case bt_query_t::bt_lt:
 	        if (slot != end || keyCmp(page.rec(slot).key(), q->val1) < 0) {
@@ -733,7 +733,7 @@ bt_ext_t::_binSearch(
     for(int j=0;j<=hi;j++){
         const keyrec_t& tup = page.rec(j);
         midkey = tup.key();
-        printf("j:%d %s\n", j,(char*)midkey);
+       // printf("j:%d %s\n", j,(char*)midkey);
     }
 
     for (;;) {

@@ -38,7 +38,7 @@ void CommandCreate(const char *table)
 {
   if (numTables == MAX_TABLES) {
     cout << "This progam can only handle "
-	 << MAX_TABLES << " open tables" << endl;
+   << MAX_TABLES << " open tables" << endl;
     return;
   }
 
@@ -64,7 +64,7 @@ void CommandLoad(const char *table, const char *loadfile)
 {
   if (numTables == MAX_TABLES) {
     cout << "This progam can only handle "
-	 << MAX_TABLES << " open tables" << endl;
+   << MAX_TABLES << " open tables" << endl;
     return;
   }
 
@@ -89,7 +89,7 @@ CommandBulkInsert(const char *table, const char *loadfile)
 {
   if (numTables == MAX_TABLES) {
     cout << "This progam can only handle "
-	 << MAX_TABLES << " open tables" << endl;
+   << MAX_TABLES << " open tables" << endl;
     return;
   }
 
@@ -121,7 +121,7 @@ void CommandOpen(const char *table)
 {
   if (numTables == MAX_TABLES) {
     cout << "This progam can only handle "
-	 << MAX_TABLES << " open tables" << endl;
+   << MAX_TABLES << " open tables" << endl;
     return;
   }
 
@@ -166,7 +166,7 @@ void CommandClose(const char *table)
 }
 
 void CommandSelect(const char *table,
-		   void *query)
+       void *query)
 {
   int i;
 
@@ -194,7 +194,7 @@ void CommandSelect(const char *table,
       dlen = gist_p::max_tup_sz;
       if (gist->fetch(cursor, (void *) key, klen, (void *) data, dlen, eof) != RCOK) {
           cerr << "can't fetch from cursor" << endl;
-	  return;
+    return;
       }
       if (eof) break;
       // print key and data
@@ -224,11 +224,14 @@ void Select(const char *table,
   bool eof;
   char key[gist_p::max_tup_sz];
   smsize_t klen;
-  char data[gist_p::max_tup_sz];
+  //char data[gist_p::max_tup_sz];
   smsize_t dlen;
   int cnt = 0;
+  long* data=new long;
   struct result_item item;
-  string s_key,s_data;
+  string s_key;
+  string s_data;
+  long d;
   vector<result_item> v;
 
 
@@ -244,9 +247,12 @@ void Select(const char *table,
       // print key and data
       printDatum(key, klen, data, dlen);
       s_key = key;
-      s_data =data;
+      //s_data=data;
+      d=*data;
+
       item.key = s_key;
-      item.value = s_data;
+      item.value =d;
+      delete data;
       v.push_back(item);
       cnt++;
   }
@@ -254,7 +260,7 @@ void Select(const char *table,
   printf("retrieved %d items\n", cnt);
 }
 void CommandDelete(const char *table,
-		   void *query)
+       void *query)
 {
   int i;
   if ((i = GetTable(table)) == NOT_FOUND) {
@@ -292,7 +298,7 @@ CommandCheck(const char *table)
     int i;
     if ((i = GetTable(table)) == NOT_FOUND) {
         cerr << "Table not open!" << endl;
-	return;
+  return;
     }
     gist_m *gist = tables[i].gist;
     if (gist->check() != RCOK) {
@@ -303,8 +309,8 @@ CommandCheck(const char *table)
 void CommandQuit()
 {
     for (int i=0; i<numTables; i++) {
-	tables[i].gist->flush();
-	delete tables[i].gist;
+  tables[i].gist->flush();
+  delete tables[i].gist;
     }
   cout << "Goodbye." << endl;
   exit(0);

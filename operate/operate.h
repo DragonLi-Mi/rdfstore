@@ -11,7 +11,7 @@ using namespace std;
 struct result_item
 {
 	string key;
-	string value;
+	unsigned long  value;
 };
 void CommandCreate(const char *table);
 void CommandCheck(const char *table);
@@ -22,6 +22,7 @@ void CommandSelect(const char *table, void *query);
 void Select(const char *table, void *query,vector<result_item> &result);
 void CommandDelete(const char *table, void *query);
 void CommandInsert(const char *table, void * key, int klen, void *data, int dlen);
+
 void CommandQuit();
 void CommandDump(const char *table, shpid_t pgno);
 void CommandCreateNodefile(const char *table);

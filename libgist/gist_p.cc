@@ -309,7 +309,7 @@ gist_p::insert_expand(
     std::cout<<"inserting expand"<<std::endl;
     if (idx != _pp->nslots)    {
 	//  Shift left neighbor slots further to the left
-        std::cout<<"312:_____________"<<_pp->nslots<<" "<<cnt<<std::endl;
+       // std::cout<<"312:_____________"<<_pp->nslots<<" "<<cnt<<std::endl;
 
 	// memcpy(&_pp->slot[-(_pp->nslots + cnt - 1)],
 	//        &_pp->slot[-(_pp->nslots - 1)], 
@@ -320,7 +320,7 @@ gist_p::insert_expand(
 
     
 
-    std::cout<<"inserting expand2"<<std::endl<<"~"<<std::endl;
+    //std::cout<<"inserting expand2"<<std::endl<<"~"<<std::endl;
     }
     //  Fill up the slots and data
     register slot_t* p = &_pp->slot[-idx];

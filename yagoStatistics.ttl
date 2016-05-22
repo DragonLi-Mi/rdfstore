@@ -1,7 +1,7 @@
 # This file is part of the ontology YAGO2s
 # It is licensed under a Creative-Commons Attribution License by the YAGO team
 # at the Max Planck Institute for Informatics/Germany.
-# See http://yago-knowledge.org for all details.
+# See http://yago-knowledge.o rg for all details.
 # This file was generated on 2012-11-11 T 17:50:45.0072.
 # 
 # 
@@ -15,7 +15,6 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<yagoTheme_yagoSchema>	<hasNumber>	"349"^^xsd:integer .
 <yagoTheme_yagoWordnetIds>	<hasNumber>	"68862"^^xsd:integer .
 <yagoTheme_yagoTaxonomy>	<hasNumber>	"451765"^^xsd:integer .
 <yagoTheme_yagoWikipediaInfo>	<hasNumber>	"43822206"^^xsd:integer .
@@ -33,3 +32,5 @@
 <hasExport>	<hasNumber>	"175"^^xsd:integer .
 <holdsPoliticalPosition>	<hasNumber>	"6029"^^xsd:integer .
 <YAGO_(database)>	<wasCreatedOnDate>	"2012-11-15"^^xsd:date .
+<yagoTheme_yagoSchema>	<hasNumber>	"349"^^xsd:integer .
+

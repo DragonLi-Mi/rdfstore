@@ -47,8 +47,8 @@ public:
     static const char LITERA = 'l';
     static const char DATE = 'd';
     static const char TIME = 't';
-    static const char INTRGER = 'i';
-    static const char BOOLEAN = 'b';
+    static const char INTEGER = 'i';
+    static const char _BOOLEAN = 'b';
     static const char DOUBLE = 'u';
     static const char DECIMAL = 'l';
 

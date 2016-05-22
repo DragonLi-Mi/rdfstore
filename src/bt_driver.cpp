@@ -1,4 +1,3 @@
-// implements driver functions for integer B-trees
 
 #include <stdio.h>
 #include "gist.h"
@@ -15,7 +14,7 @@ printDatum(
     char* k = (char* )key;
       //  std::string k = (char* )key;
 
-   long* d = (long* ) (data);
+   unsigned long* d = (unsigned long* ) (data);
 
 
 
@@ -26,7 +25,7 @@ char *identStr = "string B-tree";
 //char *identStr = "int B-tree";
 
 
-//gist_ext_t *extension = bt_int_ext;
+//gist_ext_t *extension = &bt_int_ext;
 
 //gist_ext_t *extension = &bt_str_ext;
 bt_ext_t *extension = &bt_str_ext;
