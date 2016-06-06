@@ -7,6 +7,7 @@
 #include <string>
 #include <algorithm>
 #include <iomanip>
+#include <bitset>
 #include "Triple.h"
 #include "TurtleParser.h"
 #include "RDFParser.h"
@@ -21,8 +22,12 @@ unsigned long node_exist(  const char *table,char *node_md5);
 unsigned long inlinenode(char nodetype,vector<string> v);
 int split(const string& str, vector<string>& ret_, string sep);
 void  InsertIndex(unsigned long s,unsigned long p,unsigned long o);
-// int exist(const string filename);
-class  datetime
+float GetFloat32( std::string Binary );
+int Binary2Hex( std::string Binary );
+
+
+
+ class  datetime
 {
 
 public:
@@ -251,6 +256,38 @@ void setint(string integer){
  string zero="0";
 	
 };
+class decimal
+{
+public:
+	decimal(){};
+	~decimal(){};
+
+void set(string str_decimal){
+
+ f=stof(str_decimal);
+    bitset<sizeof f*8> a(*(long unsigned int*)(&f));
+   b_decimal=a.to_string();
+
+	if(56>b_decimal.size())
+	{
+		for (int i =56-b_decimal.size() ; i >0; i--)
+		{
+			b_decimal=b_decimal+zero;
+
+		}
+	}
+ }
+
+
+
+
+ float f;
+ int decimalvalue;
+ string b_decimal;
+ string zero="0";
+
+};
+
 
 template< typename T >
 string int_to_hex( T i )
@@ -260,5 +297,11 @@ string int_to_hex( T i )
          string result=stream.str();
   return result;
 }
-
+template <class T>
+ std::string to_string (const T& t)
+{
+    std::stringstream ss;
+    ss << t;
+    return ss.str();
+}
 #endif

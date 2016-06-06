@@ -57,7 +57,7 @@ clean:
 	cd libbtree ; $(MAKE) clean
 	cd src ; $(MAKE) clean
 	cd operate ; $(MAKE) clean
-	rm -f ./SPO ./OSP ./POS ./test ./nodes
+	rm -f ./SPO ./OSP ./POS ./node2id ./nodes 
 
 #	makedepend
 
