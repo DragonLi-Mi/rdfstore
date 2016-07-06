@@ -403,7 +403,6 @@ void transform(const SPARQLParser& input, QueryGraph& output)
   SPARQLParser::PatternGroup group;
   // SPARQLParser::Pattern pat(Element subject,Element predicate,Element
   // object);
-  cout<<endl<<endl;
   group = input.getPatterns();
   for (std::vector<SPARQLParser::Pattern>::const_iterator
            iter = group.patterns.begin(),

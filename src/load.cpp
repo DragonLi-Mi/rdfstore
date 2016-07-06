@@ -15,10 +15,9 @@ static char nodetable[] = "nodes";
 int loadrdf(const string rdf_file, const string database) {
   const char* table = database.data();
 
-  // exit(rdf_file);
   ifstream _fin(rdf_file.c_str());
   if (!_fin) {
-    cerr << "fail to open~~" << rdf_file << endl;
+    cerr << "failed to open" << rdf_file << endl;
     exit(0);
   }
   //   CommandCreateNodefile(nodetable);
@@ -69,16 +68,17 @@ int loadrdf(const string rdf_file, const string database) {
       unsigned long subid = node_exist(table, inserts);
 
       if (subid == 0) {
+        
         subid = add2Node(sub);
-        cout << "sub :" << _sub << "  sub id: " << subid << "   MD5:" << inserts
-             << endl;
+        // cout << "sub :" << _sub << "  sub id: " << subid << "   MD5:" << inserts
+        //      << endl;
+     
         CommandInsert(table, inserts, strlen(inserts) + 1, &subid,
                       sizeof(subid));
       } else {
         cout << "node exist! " << subid << endl;
       }
       delete[] inserts;
-
       //  For predicate
       string _pre = triple_array[i].getPredicate();
       string _preh = MD5(_pre).toString();
@@ -90,8 +90,8 @@ int loadrdf(const string rdf_file, const string database) {
       if (preid == 0) {
         preid = add2Node(pre);
 
-        cout << "pre: " << pre << "  pre id: " << preid << "   MD5:" << _preh
-             << endl;
+        // cout << "pre: " << pre << "  pre id: " << preid << "   MD5:" << _preh
+        //      << endl;
         CommandInsert(table, insertp, strlen(insertp) + 1, &preid,
                       sizeof(preid));
 
@@ -149,8 +149,8 @@ int loadrdf(const string rdf_file, const string database) {
 
         if (objid == 0) {
           objid = add2Node(obj);
-          cout << "obj:" << _obj << " obj id: "<<objid
-               << "   MD5:" << _objh << endl;
+          // cout << "obj:" << _obj << " obj id: "<<objid
+          //      << "   MD5:" << _objh << endl;
 
           CommandInsert(table, inserto, strlen(inserto) + 1, &objid,
                         sizeof(objid));
@@ -172,35 +172,35 @@ int loadrdf(const string rdf_file, const string database) {
   CommandClose("OSP");
 
   CommandOpen(table);
-    CommandOpen("POS");
+   // CommandOpen("POS");
 
 
   //  // bt_query_t q(bt_query_t::bt_eq, new int(1096),NULL);
-  char*   p= new char[32];
-    char*   po= new char[64];
-
-  char* a = "bfc739e9608b571700b38d74b7ece17c";
-  char* b = "000000000000004e0000000000000080";
-  strcpy(p, a);
-  strcpy(po, b);
-
-
-  vector<result_item> result,result2;
-  bt_query_t q(bt_query_t::bt_eq, p, NULL);
-    bt_query_t qo(bt_query_t::bt_eq, po, NULL);
-
+  // char*   p= new char[32];
+  //   char*   po= new char[64];
   //
-  string as = Id2node(979);
-  cout << "ID to node: " << as << endl;
-
-  // CommandSelect(table,&q);
-  Select(table, &q, result);
-    Select("POS", &qo, result2);
-
-  cout << "key!!!!!!!!!!!!!!!!!!!!!:        " << result[0].key << endl;
-  cout << "id!!!!!!!!!!!!!!!!!!!!!:        " << result[0].value << endl;
-  cout << "2key!!!!!!!!!!!!!!!!!!!!!:        " << result2[0].key << endl;
-  cout << "2id!!!!!!!!!!!!!!!!!!!!!:        " << result2[0].value << endl;
+  // char* a = "bfc739e9608b571700b38d74b7ece17c";
+  // char* b = "000000000000004e0000000000000080";
+  // strcpy(p, a);
+  // strcpy(po, b);
+  //
+  //
+  // vector<result_item> result,result2;
+  // bt_query_t q(bt_query_t::bt_eq, p, NULL);
+  //   bt_query_t qo(bt_query_t::bt_eq, po, NULL);
+  //
+  // //
+  // string as = Id2node(979);
+  // cout << "ID to node: " << as << endl;
+  //
+  // // CommandSelect(table,&q);
+  // Select(table, &q, result);
+  //   Select("POS", &qo, result2);
+  //
+  // cout << "key!!!!!!!!!!!!!!!!!!!!!:        " << result[0].key << endl;
+  // cout << "id!!!!!!!!!!!!!!!!!!!!!:        " << result[0].value << endl;
+  // cout << "2key!!!!!!!!!!!!!!!!!!!!!:        " << result2[0].key << endl;
+  // cout << "2id!!!!!!!!!!!!!!!!!!!!!:        " << result2[0].value << endl;
 
 
 
@@ -346,24 +346,26 @@ void InsertIndex(unsigned long s, unsigned long p, unsigned long o) {
   unsigned long sub = node_exist("SPO", sp);
   unsigned long pre = node_exist("POS", po);
   unsigned long obj = node_exist("OSP", os);
-  cout <<" SPO" << " " << s_id<<" "<<p_id<<" "<<o_id << endl;
-    cout <<"inserting POS" << " " << hex_s<<" "<<hex_p<<" "<<hex_o <<" key:"<<hex_po<< endl;
+  //cout <<" SPO" << " " << s_id<<" "<<p_id<<" "<<o_id << endl;
+   //cout <<"inserting POS" << " " << hex_s<<" "<<hex_p<<" "<<hex_o <<" key:"<<hex_po<< endl;
 
 
 
   if (sub == s) {
     cout << "SP exist and have a same O" << endl;
   } else if (sub != 0) {
-    cout << "SP exist but there is  a different O" << endl;
     CommandInsert("SPO", sp, strlen(sp) + 1, &o_id, sizeof(o_id));
+
   } else {
-    CommandInsert("SPO", sp, strlen(sp) + 1, &o_id, sizeof(o_id));
+        CommandInsert("SPO", sp, strlen(sp) + 1, &o_id, sizeof(o_id));
+
   }
   if (pre == p) {
     cout << "PO exist and have a same S" << endl;
   } else if (pre != 0) {
     cout << "PO exist but there is  a different S" << endl;
     CommandInsert("POS", po, strlen(po) + 1, &s_id, sizeof(s_id));
+
   } else {
     CommandInsert("POS", po, strlen(po) + 1, &s_id, sizeof(s_id));
   }

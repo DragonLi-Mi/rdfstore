@@ -144,6 +144,10 @@ gist_file::findFreeBuffer()
 	}
     }
     for (i = 0; i < GISTBUFS; i++) {
+       
+
+    }
+    for (i = 0; i < GISTBUFS; i++) {
         if (descrs[i].pinCount == 0) {
 	    return i;
 	}
@@ -154,7 +158,6 @@ gist_file::findFreeBuffer()
 rc_t
 gist_file::_write_page(shpid_t pageNo, char *page)
 {
-   std::cout<<"_write_page:"<<page<<std::endl;
     int status = lseek(fileHandle, pageNo * SM_PAGESIZE, SEEK_SET);
     if (status < 0) return (eFILEERROR);
     status = write(fileHandle, page, SM_PAGESIZE);
@@ -208,6 +211,7 @@ gist_file::pinPage(shpid_t page)
 	// prepare the descr
 	descr = &descrs[index];
 	// write out page if dirty
+
 	if (descr->isDirty) {
 	    if (_write_page(descr->pageNo, descr->page) != RCOK) {
 	        return NULL;
@@ -235,6 +239,7 @@ void
 gist_file::unpinPage(page_descr *descr)
 {
     assert(descr != NULL);
+    assert(descr->pinCount>0);
     descr->pinCount--;
 }
 
@@ -344,7 +349,6 @@ gist_file::create(const char *filename,const char *filetype)
     char *type="nodes";
 if (strcmp(filetype,type)!=0)
 {
-    std::cout<<"file types is not nodes"<<std::endl;
     return false;
 }
     assert(!isOpen);

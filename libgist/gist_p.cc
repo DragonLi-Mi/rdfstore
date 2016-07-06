@@ -120,6 +120,9 @@ gist_p::remove(int slot)
 #ifdef LIBGIST
     // non-root node: slot also corrected for BP, not just for header
     int correction = (this->is_root() ? 1 : 2);
+      // printf("the page id=%d ",_pp->pid.page);
+    // std::cout<<"remove idx="<<slot+correction;
+    // std::cout<<" nslot="<<_pp->nslots<<std::endl;
     W_DO(remove_compress(slot + correction, 1));
     this->descr->isDirty = true;
     return RCOK;
@@ -289,6 +292,7 @@ gist_p::insert_expand(
     int 			    cnt, 
     const cvec_t 		    vec[])
 {
+
     assert(idx >= 0 && idx <= _pp->nslots);
     assert(cnt > 0);
 
@@ -298,7 +302,6 @@ gist_p::insert_expand(
     for (i = 0; i < cnt; i++)  {
 	total += int(align(vec[i].size()) + sizeof(slot_t));
     }
-
     //  Try to get the space ... could fail with eRECWONTFIT
     W_DO(_pp->space.acquire(total, 0));
 
@@ -306,7 +309,6 @@ gist_p::insert_expand(
 	_compress();
 	assert(contig_space() >= total);
     }
-    std::cout<<"inserting expand"<<std::endl;
     if (idx != _pp->nslots)    {
 	//  Shift left neighbor slots further to the left
        // std::cout<<"312:_____________"<<_pp->nslots<<" "<<cnt<<std::endl;
@@ -315,8 +317,8 @@ gist_p::insert_expand(
 	//        &_pp->slot[-(_pp->nslots - 1)], 
 	//        (_pp->nslots - idx) * sizeof(slot_t));
     int len=_pp->nslots - idx;
-    for (int i=0;i<len;i++) _pp->slot[-(_pp->nslots-i)]=_pp->slot[-(_pp->nslots-i-1)];
 
+    for (int i=0;i<len;i++) _pp->slot[-(_pp->nslots-i)]=_pp->slot[-(_pp->nslots-i-1)];
 
     
 
@@ -331,7 +333,7 @@ gist_p::insert_expand(
     }
 
     _pp->nslots += cnt;
-    
+
     return RCOK;
 }
 
@@ -434,7 +436,6 @@ void
 gist_p::_compress(int idx)
 {
 
-std::cout<<"_compress~~~~~~~~"<<std::endl;
     assert(idx < 0 || idx < _pp->nslots);
     
     //  Copy data area over to scratch

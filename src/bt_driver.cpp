@@ -18,7 +18,7 @@ printDatum(
 
 
 
-    printf("%s: %ld\n", k, *d);
+  //  printf("%s: %ld\n", k, *d);
 }
 
 char *identStr = "string B-tree";

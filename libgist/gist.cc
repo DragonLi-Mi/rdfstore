@@ -206,6 +206,7 @@ gist_m::_locate_leaf(
     const vec_t&	key, // key to insert
     const vec_t&	data) // data to insert
 {
+
     lpid_t currPid = root;
     gist_p page;
     int index;
@@ -220,11 +221,14 @@ gist_m::_locate_leaf(
 	} else {
 	    // we found a leaf
 	    stack.push(page, 0);
+
 	    return (RCOK); // leave the leaf latched
 	}
 
 	// follow child pointer
-	currPid.page = page.rec(index).child();
+	currPid.page = page.rec(index).child(); 
+
+
 	// no page.unfix(); we leave the pages fixed for now
     }
 }
@@ -268,6 +272,7 @@ gist_m::_insert_leaf(
     const vec_t&	data, // data of new entry
     bool&		bpChanged) // out: true if the BP changed
 {
+
     int cnt = page.nrecs();
 
     // make sure that at least enough additional space needed
@@ -289,7 +294,10 @@ gist_m::_insert_leaf(
 	// compute the additional space
 	unsigned int total = align(bpv.len(0) + sizeof(keyrec_t)) -
 	    align(page.rec_size(gist_p::bpSlot));
-	if (total > page.usable_space()) return RC(eRECWONTFIT); // can't even fit new BP
+	if (total > page.usable_space()) {
+
+        return RC(eRECWONTFIT); 
+    }// can't even fit new BP
 
 	// extract and update bp
 	if (bpChanged) {
@@ -327,6 +335,7 @@ gist_m::_insert_leaf(
 #endif
 	status = ext->insert(page, key, data, 0);
     }
+
     return (status);
 }
 
@@ -365,13 +374,13 @@ gist_m::_apply_update(
 	}
 
 	// compute the additional space
+
 	unsigned int total = align(bpv.len(0) + sizeof(keyrec_t)) -
 	    align(page.rec_size(gist_p::bpSlot));
-
 	if (total > page.usable_space()) return RC(eRECWONTFIT);
-
 	if (bpChanged) {
 	    // write bp back
+
 	    W_DO(page.remove(gist_p::bpSlot));
 	    rc_t status = page.insert(bpv, cvec_t(), gist_p::bpSlot, 0);
 	    w_assert3(_err_num(status) != eRECWONTFIT);
@@ -405,8 +414,9 @@ gist_m::_split(
     vec_t&		leftBp, // BP for page
     vec_t&		rightBp) // BP for rightChild
 {
-    
+
     if (stack.is_root(stkIdx)) {
+
         // do root split
 	gist_p leftChild;
 
@@ -426,22 +436,27 @@ gist_m::_split(
 	// split the left child
 	W_DO(_split_node(ext, leftChild, rightChild, rightEntries, numRight, false, leftBp,
 	    rightBp));
-
 	// add the two new entries to the otherwise empty root
 	W_DO(ext->insert(page, leftBp, vec_t(), leftChild.pid().page));
 	W_DO(ext->insert(page, rightBp, vec_t(), rightChild.pid().page));
 
 	// unfix root and return left child as split page
 	// we neednt fix the stack, because _update_parent will not be called
+
 	_unfix_page(page);
+
 	page = leftChild;
+
+
     } else {
+
         // do regular split
 	W_DO(_new_page(root, page.pid(), rightChild, page.level()));
 	W_DO(_split_node(ext, page, rightChild, rightEntries, numRight, true, leftBp, rightBp));
 	W_DO(_update_parent(root, ext, stack, stkIdx+1, leftBp, rightBp,
 	    rightChild.pid().page));
     }
+
 
     return RCOK;
 }
@@ -458,7 +473,6 @@ gist_m::_split_node(
     cvec_t&		rightBp) // BP of right sibling
 {
     
-    std::cout<<"split node !!!!!!!!!!"<<std::endl;
     // first, move entries to new right sibling
     W_DO(right.insert(rightBp, cvec_t(), gist_p::bpSlot, 0));
         // we promised there'd be a BP
@@ -494,6 +508,7 @@ gist_m::_split_node(
     // First, remove the positions of new node entries from rightEntries.
     if (rightEntries[numRight-1] >= left.nrecs()) numRight--;
     if (rightEntries[numRight-1] >= left.nrecs()) numRight--;
+
     W_DO(ext->remove(left, rightEntries, numRight));
     if (leftHasBp) {
 	W_DO(left.remove(gist_p::bpSlot));
@@ -543,13 +558,14 @@ gist_m::insert(
 
     // insert item/update BP
     bool bpChanged = false;
+
     rc_t status = _insert_leaf(ext, leaf, keyv, datav, bpChanged);
+
     if (status && _err_num(status) != eRECWONTFIT) {
         return RC_AUGMENT(status);
     }
 
     if (_err_num(status) == eRECWONTFIT) {// something didnt fit; we must split the page
-
 	// find out how to split
 	int rightEntries[gist_p::max_scnt];
 	int numRight = gist_p::max_scnt;
@@ -599,7 +615,7 @@ gist_m::insert(
 	    // we don't log this physically; a logical log record is written a little later
 	    xct_log_switch_t log_off(OFF);
 #endif
-	    W_DO(ext->insert(p, keyv, datav, 0));
+        W_DO(ext->insert(p, keyv, datav, 0));
 	}
 #ifndef LIBGIST
 	W_DO(log_gist_insert(leaf, ext, keyv, datav));
@@ -625,6 +641,7 @@ gist_m::insert(
 	}
 #endif
         X_DO(_update_parent(root, ext, stack, 1, bpv, vec_t(), 0), anchor);
+
 #ifndef LIBGIST
         // end atomic action here
 	if (xd) {
@@ -752,12 +769,13 @@ gist_m::_update_parent(
         rightv));
 
     // insert left and right items
-    gist_p &p = leftGoesRight ? rightSib : page;
-    W_DO(ext->insert(p, leftPred, vec_t(), childPtr));
-    p = rightGoesRight ? rightSib : page;
-    W_DO(ext->insert(p, rightPred, vec_t(), rightChild));
+    gist_p &p1 = leftGoesRight ? rightSib : page;
+    W_DO(ext->insert(p1, leftPred, vec_t(), childPtr));
+    gist_p &p2 = rightGoesRight ? rightSib : page;
+    W_DO(ext->insert(p2, rightPred, vec_t(), rightChild));
     _unfix_page(page);
     _unfix_page(rightSib);
+
     return RCOK;
 }
 

@@ -153,7 +153,6 @@ ubt_ext_t::pickSplit(
     void *rightBp,
     int &rightLen)
 {
-   std::cout<<"split!!!!!!!!!!!"<<std::endl;
     SortItem items[gist_p::max_scnt];
     int itemCnt = pcursor.numElems;
     int totalCnt = 0;
@@ -353,6 +352,8 @@ str_cmp(const void *a, const void *b)
   //       c1=(unsigned char)*s1++;
   //       c2=(unsigned char)*s2++;
       
+
+
   //       if (i==len&&c1==c2)
   //       {
             
@@ -720,21 +721,22 @@ bt_ext_t::_binSearch(
     const void* data,
     bool keyOnly) // true: only compare keys
 {
-    int hi = page.nrecs() - 1;
+    long hi = page.nrecs() - 1;
+    
     if (hi == -1) {
         // nothing on this page yet
 	return -1;
     }
-    int lo = 0;
-    int mid;
+    long lo = 0;
+    long mid;
     const void* midkey;
     const void* middata;
-    int res;
-    for(int j=0;j<=hi;j++){
-        const keyrec_t& tup = page.rec(j);
-        midkey = tup.key();
-       // printf("j:%d %s\n", j,(char*)midkey);
-    }
+    long res;
+    // for(int j=0;j<=hi;j++){
+    //     const keyrec_t& tup = page.rec(j);
+    //     midkey = tup.key();
+    //    printf("j:%d %s\n", j,(char*)midkey);
+    // }
 
     for (;;) {
 	mid = (hi + lo) / 2;
@@ -752,7 +754,9 @@ bt_ext_t::_binSearch(
 	}
 	res = keyCmp(key, midkey);
 	if (!keyOnly && res == 0) {
-	    res = dataCmp(data, middata);
+	    // std::cout<<"data:"<<(long)data<<" mid data:"<<(long)middata<<std::endl;
+        //res = dataCmp(data, middata);
+    res=(long)data-(long)middata;
         printf("data CMP:   %d\n",res );
 	}
 	if (res < 0) {

@@ -51,6 +51,7 @@ void CommandCreate(const char *table)
     delete gist;
     return;
   }
+  
 
   cout << "Table " << table << " created as type " << identStr << endl;
 
@@ -201,7 +202,7 @@ void CommandSelect(const char *table,
       printDatum(key, klen, data, dlen);
       cnt++;
   }
-  printf("retrieved %d items\n", cnt);
+  //printf("retrieved %d items\n", cnt);
 }
 
 void Select(const char *table,
